@@ -6,6 +6,7 @@ from config.settings import settings
 db_url = settings.DATABASE_URL
 if db_url.startswith("postgresql://"):
     db_url = db_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+    db_url = db_url.replace("sslmode=", "ssl=")
 
 if "sqlite" in db_url:
     os.makedirs(os.path.dirname(db_url.replace("sqlite+aiosqlite:///", "")), exist_ok=True)
