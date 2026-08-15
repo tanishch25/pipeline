@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Loader2 } from 'lucide-react';
+import { Play, Loader2, Square } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export default function PipelineRunner() {
   const [query, setQuery] = useState("Gyms in Austin TX");
@@ -26,7 +27,7 @@ export default function PipelineRunner() {
     
     try {
       // 1. Trigger the background run
-      const res = await fetch('http://localhost:8000/api/pipeline/run', {
+      const res = await fetch(`${API_BASE_URL}/api/pipeline/run`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, limit: parseInt(limit), mock_mode: mockMode, engine: engine, auto_send: autoSend })
@@ -34,7 +35,7 @@ export default function PipelineRunner() {
       if (!res.ok) throw new Error("Failed to start pipeline");
 
       // 2. Connect to SSE stream
-      const eventSource = new EventSource('http://localhost:8000/api/pipeline/progress');
+      const eventSource = new EventSource(`${API_BASE_URL}/api/pipeline/progress`);
       
       eventSource.onmessage = (event) => {
         if (event.data === "DONE") {
@@ -139,7 +140,7 @@ export default function PipelineRunner() {
           {isRunning && (
             <button
               onClick={async () => {
-                await fetch('http://localhost:8000/api/pipeline/stop', { method: 'POST' });
+                await fetch(`${API_BASE_URL}/api/pipeline/stop`, { method: 'POST' });
                 setLogs(prev => [...prev, "[SYSTEM] Stop signal sent. Halting soon..."]);
               }}
               className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-md font-medium transition-colors"

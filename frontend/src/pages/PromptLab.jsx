@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Beaker, Settings, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export default function PromptLab() {
   const location = useLocation();
@@ -19,7 +20,7 @@ export default function PromptLab() {
   const [refinePrompt, setRefinePrompt] = useState("");
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/prompts/config')
+    fetch('${API_BASE_URL}/api/prompts/config')
       .then(r => r.json())
       .then(data => {
         if (data.draft_prompt) setDraftPrompt(data.draft_prompt);
@@ -34,7 +35,7 @@ export default function PromptLab() {
   
   useEffect(() => {
     if (location.pathname === '/lab') {
-      fetch('http://localhost:8000/api/leads')
+      fetch(`${API_BASE_URL}/api/leads`)
         .then(r => r.json())
         .then(data => {
           setLeads(data);
@@ -48,7 +49,7 @@ export default function PromptLab() {
     if (!selectedLeadId) return;
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8000/api/prompts/test-pitch', {
+      const res = await fetch(`${API_BASE_URL}/api/prompts/test-pitch`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -161,7 +162,7 @@ export default function PromptLab() {
                   <button
                     onClick={async () => {
                       try {
-                        const res = await fetch('http://localhost:8000/api/prompts/save-pitch', {
+                        const res = await fetch('${API_BASE_URL}/api/prompts/save-pitch', {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
                           body: JSON.stringify({
@@ -236,7 +237,7 @@ export default function PromptLab() {
           <button 
             onClick={async () => {
               try {
-                const res = await fetch('http://localhost:8000/api/prompts/config', {
+                const res = await fetch('${API_BASE_URL}/api/prompts/config', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
                   body: JSON.stringify({

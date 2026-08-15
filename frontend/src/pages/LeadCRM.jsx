@@ -3,6 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { Search, MapPin, Copy, Save, Globe, AlertCircle, Phone, Link, CheckCircle2 } from 'lucide-react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 
+import { API_BASE_URL } from '../config';
+
 export default function LeadCRM() {
   const location = useLocation();
   const [leads, setLeads] = useState([]);
@@ -27,7 +29,7 @@ export default function LeadCRM() {
       if (statusFilter) params.append("status", statusFilter);
       if (minScore > 0) params.append("min_score", minScore);
       
-      const res = await fetch(`http://localhost:8000/api/leads?${params}`);
+      const res = await fetch(`${API_BASE_URL}/api/leads?${params}`);
       const data = await res.json();
       setLeads(data);
     } catch (e) {
@@ -52,7 +54,7 @@ export default function LeadCRM() {
   };
 
   const updateStatus = async (id, newStatus) => {
-    await fetch(`http://localhost:8000/api/leads/${id}/status`, {
+    await fetch(`${API_BASE_URL}/api/leads/${id}/status`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus })
@@ -61,7 +63,7 @@ export default function LeadCRM() {
   };
 
   const savePitch = async (id, newBody) => {
-    await fetch(`http://localhost:8000/api/leads/${id}/pitch`, {
+    await fetch(`${API_BASE_URL}/api/leads/${id}/pitch`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ body_text: newBody })
@@ -83,7 +85,7 @@ export default function LeadCRM() {
     
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:8000/api/leads/bulk-send`, {
+      const res = await fetch(`${API_BASE_URL}/api/leads/bulk-send`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ lead_ids: Array.from(selectedLeads) })
@@ -108,7 +110,7 @@ export default function LeadCRM() {
             onClick={async () => {
               setLoading(true);
               try {
-                await fetch('http://localhost:8000/api/pipeline/sync', { method: 'POST' });
+                await fetch(`${API_BASE_URL}/api/pipeline/sync`, { method: 'POST' });
                 alert("Inbox sync triggered in the background.");
               } catch (e) {
                 alert("Sync failed: " + e.message);
@@ -256,7 +258,7 @@ export default function LeadCRM() {
                     onClick={async (e) => {
                       e.stopPropagation();
                       if (confirm("Are you sure you want to permanently delete this lead?")) {
-                        await fetch(`http://localhost:8000/api/leads/${lead.id}`, { method: 'DELETE' });
+                        await fetch(`${API_BASE_URL}/api/leads/${lead.id}`, { method: 'DELETE' });
                         fetchLeads();
                       }
                     }}
@@ -381,7 +383,7 @@ export default function LeadCRM() {
                               
                               // 2. Send email
                               try {
-                                const res = await fetch(`http://localhost:8000/api/leads/${lead.id}/send`, {
+                                const res = await fetch(`${API_BASE_URL}/api/leads/${lead.id}/send`, {
                                   method: 'POST',
                                   headers: { 'Content-Type': 'application/json' },
                                   body: JSON.stringify({ to_email: toEmail })

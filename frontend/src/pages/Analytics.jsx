@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from 'recharts';
 import { TrendingUp, Users, Target, Zap } from 'lucide-react';
 
+import { API_BASE_URL } from '../config';
+
 export default function Analytics() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/analytics/summary')
+    fetch(`${API_BASE_URL}/api/analytics/summary`)
       .then(res => res.json())
       .then(setData)
       .catch(console.error);
