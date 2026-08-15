@@ -25,7 +25,3 @@ services:
         value: imap.gmail.com
       - key: IMAP_PORT
         value: 993
-    disk:
-      name: data
-      mountPath: /opt/render/project/src/data
-      sizeGB: 1
